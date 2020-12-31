@@ -6,10 +6,12 @@
 //
 
 import UIKit
+import AVFoundation
 
 class ViewController: UIViewController {
     
-    var isLightOn = 0
+    var screenColor = 0
+    var torchIsOn = false
     
     override var prefersStatusBarHidden: Bool {
         return true
@@ -19,9 +21,31 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         updateUI()
     }
+    
+    func toggleTorch() {
+        guard let device = AVCaptureDevice.default(for: .video) else { return }
+
+        if device.hasTorch {
+            do {
+                try device.lockForConfiguration()
+
+                if torchIsOn == true {
+                    device.torchMode = .on
+                } else {
+                    device.torchMode = .off
+                }
+
+                device.unlockForConfiguration()
+            } catch {
+                print("Torch could not be used")
+            }
+        } else {
+            print("Torch is not available")
+        }
+    }
 
     fileprivate func updateUI() {
-        switch isLightOn {
+        switch screenColor {
         case 0:
             view.backgroundColor = .black
         case 1:
@@ -36,12 +60,14 @@ class ViewController: UIViewController {
     }
     
     @IBAction func buttonPressed() {
-        if isLightOn < 3 {
-            isLightOn += 1
+        if  screenColor < 3 {
+            screenColor += 1
             } else {
-                isLightOn = 0
+                screenColor = 0
             }
+        torchIsOn.toggle()
         updateUI()
+        toggleTorch()
     }
     
 }

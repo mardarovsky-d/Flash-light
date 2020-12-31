@@ -9,7 +9,8 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    var isLightOn = false
+    var isLightOn = 0
+    
     override var prefersStatusBarHidden: Bool {
         return true
     }
@@ -20,11 +21,26 @@ class ViewController: UIViewController {
     }
 
     fileprivate func updateUI() {
-        view.backgroundColor = isLightOn ? .white : .black
+        switch isLightOn {
+        case 0:
+            view.backgroundColor = .black
+        case 1:
+            view.backgroundColor = .red
+        case 2:
+            view.backgroundColor = .yellow
+        case 3:
+            view.backgroundColor = .green
+        default:
+            view.backgroundColor = .black
+        }
     }
     
     @IBAction func buttonPressed() {
-        isLightOn.toggle()
+        if isLightOn < 3 {
+            isLightOn += 1
+            } else {
+                isLightOn = 0
+            }
         updateUI()
     }
     
